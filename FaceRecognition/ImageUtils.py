@@ -9,11 +9,7 @@ import numpy as np
 import cv2
 from cv2 import imread
 from numpy import reshape
-try:
-    from ..ImageProcessing.lbp import lbp_calculated_pixel
-except:
-    from ImageProcessing.lbp import lbp_calculated_pixel
-    
+
 def im2double(im):
     min_val = np.min(im.ravel())
     max_val = np.max(im.ravel())
@@ -43,6 +39,12 @@ def flattenImage(image):
     return new_image
 
 def lbpPreProcess(image_gray):
+    try:
+        from ..ImageProcessing.lbp import lbp_calculated_pixel
+    except:
+        from ImageProcessing.lbp import lbp_calculated_pixel
+    #from ..ImageProcessing import lbp
+    
     [height, width] = image_gray.shape[0:2]
     img_lbp = np.zeros((height, width,3), np.uint8)
     for i in range(0, height):

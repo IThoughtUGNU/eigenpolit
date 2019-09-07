@@ -25,10 +25,11 @@ def no_preprocess_f(image):
 def readFilesRecursively(folderpath,preprocessFunction=no_preprocess_f):
     from cv2 import cvtColor, imread
     from numpy import reshape, array    
-    try:
-        from ImageUtils import im2double
-    except ModuleNotFoundError:
-        from .ImageUtils import im2double
+    from .ImageUtils import im2double
+    #try:
+    #    from ImageUtils import im2double
+    #except ModuleNotFoundError:
+    #    from .ImageUtils import im2double
     
     files_list = []
     for root, subdirs, files in os.walk(folderpath):

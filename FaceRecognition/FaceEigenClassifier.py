@@ -34,6 +34,8 @@ class FaceEigenClassifier(object):
         
     def fit(self, nmin: int, nmax: int,log=False):
         assert (nmax > nmin)
+        from .FaceRecognition import faceRecognition, weights
+        
         self.nmin = nmin
         self.nmax = nmax
         
@@ -55,8 +57,9 @@ class FaceEigenClassifier(object):
             if log:
                 print("[LOG | FaceEigenClassifier.fit] Iterate #%d" % n)
             
-    def test(self, test_image, target_dim=(100,100), double=False, gray=True,log=False):
-        from ImageUtils import im2double
+    def _test(self, test_image, target_dim=(100,100), double=False, gray=True,log=False):
+        from .ImageUtils import im2double
+        from .FaceRecognition import weights
         
         if len(test_image.shape) == 3 and gray:
             # If the test image is not gray, gray it out
@@ -114,9 +117,13 @@ class FaceEigenClassifier(object):
             mins_differences[j] = mins[j] - mins[j-1]
             
         if (mins_differences[threshold-self.nmin:] == 0).all():
-            return True
+            return True, mins
         else:
-            return False
+            return False, mins
+
+    def test(self, test_image, target_dim=(100,100), double=False, gray=True,log=False):
+        return self._test(test_image, target_dim, double, gray,log)
+    
 
 if __name__ == "__main__":
     from cv2 import imread

@@ -21,15 +21,16 @@ import numpy as np
 
 # ------------------ CONSTANTS --------------------------
 
-INPUT_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100'
+INPUT_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100lbp'
 
-TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100-test\salvini\salvini003.jpg'
+TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100lbp-test\gentiloni\gent001.jpg'
+TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100lbp-test\salvini\salvini003.jpg'
 
 n_eigenvectors = 80
 # ------------------ Actual code ------------------------
 input_path = INPUT_PATH
 
-images = readFilesRecursively(input_path,preprocessFunction=lbpPreProcess)
+images = readFilesRecursively(input_path)
 
 u, A, mean_face = faceRecognition(images, n_eigenvectors)
 
@@ -38,7 +39,7 @@ u = u[:,3:]
 # Let's take a test image matrix
 # and vectorize it.
 #TODO: test_image = flatten_image('test.jpg');
-test_image_original = readImageAsGray(TEST_IMAGE_PATH, preprocessFunction=lbpPreProcess)
+test_image_original = readImageAsGray(TEST_IMAGE_PATH)
 test_image = flattenImage(test_image_original)
 
 # Subtract average face from test image

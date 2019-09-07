@@ -21,12 +21,18 @@ import numpy as np
 # ------------------ CONSTANTS --------------------------
 
 INPUT_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100'
+INPUT_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100lbp'
 
 TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100-test\_baddetections\matt022-2.jpg'
 TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100-test\io\rugg001.png'
 TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100-test\salvini\salvini003.jpg'
+TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100lbp-test\gentiloni\gent001.jpg'
+TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100-test\_baddetections\matt022-2.jpg'
+TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100lbp-test\salvini\salvini002.jpg'
+TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100lbp-test\io\rugg001.png'
+TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100lbp-test\salvini\salvini003.jpg'
 
-MAX_N_EIGENVECTORS = 50
+MAX_N_EIGENVECTORS = 55
 # ------------------ Actual code ------------------------
 input_path = INPUT_PATH
 
