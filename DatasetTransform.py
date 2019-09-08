@@ -78,7 +78,11 @@ if __name__ == "__main__":
             
         return cv2.cvtColor(img_lbp, cv2.COLOR_BGR2GRAY)
         
-    
+    def resize100_transform(image):
+        import cv2
+         
+        # resize image
+        return cv2.resize(image, (100,100), interpolation = cv2.INTER_AREA)
 
     import argparse
     parser = argparse.ArgumentParser(description="Face extractor from images")
@@ -94,15 +98,23 @@ if __name__ == "__main__":
                 default=False,
                 dest='lbp',
                 help='Apply Local Binary Pattern function')
+    
+    parser.add_argument('--resize100', action='store_true',
+                default=False,
+                dest='resize100',
+                help='Apply Local Binary Pattern function')
     args = parser.parse_args()
 
     input_path  = args.inputpath
     output_path = args.outputpath
     lbp = args.lbp
+    resize100 = args.resize100
     
     if input_path is None or output_path is None:
         raise SystemExit
     
+    if resize100:
+        Apply(input_path, output_path, image_transform_function=resize100_transform)
     if lbp:
         Apply(input_path, output_path, image_transform_function=lbp_transform)
     

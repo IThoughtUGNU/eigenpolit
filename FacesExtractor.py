@@ -26,6 +26,7 @@ save_path_cnn = SAVE_PATH_CNN
 super_input_path = None
 
 if __name__ == "__main__":
+    from pathlib import Path
     import argparse
     parser = argparse.ArgumentParser(description="Face extractor from images")
     
@@ -42,6 +43,10 @@ if __name__ == "__main__":
     parser.add_argument('--savepath', type=str, 
                         help='Folder to save extracted faces')
     
+    parser.add_argument('--overwrite', action='store_true',
+                default=False,
+                dest='overwrite',
+                help='Apply Local Binary Pattern function')
     args = parser.parse_args()
     
     if args.superinputpath is None:
@@ -57,6 +62,7 @@ if __name__ == "__main__":
     
     input_path = args.inputpath if args.inputpath is not None else PATH
     save_path  = args.savepath  if args.savepath  is not None else PATH
+    overwrite = args.overwrite
     
     if super_input_path is not None:
         subfolders = [f.path for f in os.scandir(super_input_path) if f.is_dir() ]
@@ -111,6 +117,11 @@ if __name__ == "__main__":
             print("Found {0} faces!".format(len(faces)))
             
             count = 0
+            filename_without_ext = os.path.splitext(image_filename)[0]
+            ext = os.path.splitext(image_filename)[1]
+            file_save_path = os.path.join(save_path, filename_without_ext + ext)
+            if (not overwrite) and Path(file_save_path).is_file():
+                continue
             # Draw a rectangle around the faces
             for (x, y, w, h) in faces:
                 cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
@@ -120,13 +131,11 @@ if __name__ == "__main__":
                 #cv2.imshow("Faces found", image)
                 #cv2.waitKey(0)
                 
-                filename_without_ext = os.path.splitext(image_filename)[0]
-                ext = os.path.splitext(image_filename)[1]
                 
                 if count > 0:
                     filename_without_ext += ("-%d" % count)
                 
-                cv2.imwrite(os.path.join(save_path, filename_without_ext + ext), image_to_save)
+                cv2.imwrite(file_save_path, image_to_save)
                 count+=1
         
         #cv2.imshow("Faces found", image)

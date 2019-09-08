@@ -17,8 +17,9 @@ def resizedImageAtPath(image_path, dim=(100,000)):
     return resized
 
 if __name__ == "__main__":
-    input_path = r'C:\dev\python\nm4cs\eigenfaces\dataset\output\_baddetections'
-    save_path = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100'
+    from pathlib import Path
+    input_path = r'C:\dev\python\nm4cs\eigenfaces\dataset\output\conte'
+    save_path = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100-test'
     
     subfolders = [f.path for f in os.scandir(input_path) if f.is_dir() ]
     if len(subfolders) == 0:
@@ -39,4 +40,7 @@ if __name__ == "__main__":
             
             new_image_path = os.path.join(image_save_path, os.path.basename(image_path))
             assert(image_save_path in new_image_path)
+            
+            if (Path(new_image_path).is_file()):
+                continue
             cv2.imwrite(new_image_path, new_image)

@@ -122,11 +122,13 @@ class FaceEigenClassifier(object):
             return False, mins
 
     def test(self, test_image, target_dim=(100,100), double=False, gray=True,log=False):
-        return self._test(test_image, target_dim, double, gray,log)
+        return self._test(test_image, target_dim, double, gray,log)[0]
     
 
 if __name__ == "__main__":
     from cv2 import imread
+    
+    from DatasetModel import readFilesRecursively
     #from FaceRecognition import readFilesRecursively
     # ------------------ CONSTANTS --------------------------
     

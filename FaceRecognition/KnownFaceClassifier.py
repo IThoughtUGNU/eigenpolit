@@ -27,7 +27,7 @@ class KnownFaceClassifier(object):
         self.notConvergenceTol = notConvergenceTol
     
     def MakeFromLbpModel(model_images, threshold = 20):
-        classifier = KnownFaceClassifier(model_images, threshold=20,strategy='lbp')
+        classifier = KnownFaceClassifier(model_images, threshold=threshold,strategy='lbp')
         return classifier
         
     def MakeFromGenericModel(model_images, threshold = 20, strategy='lbp'):
@@ -37,16 +37,16 @@ class KnownFaceClassifier(object):
             for image in model_images:
                 new_model_images.append(lbpPreProcess(cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)))
                 
-        classifier = KnownFaceClassifier(new_model_images, threshold=20,strategy='lbp')
+        classifier = KnownFaceClassifier(new_model_images, threshold=threshold,strategy=strategy)
         return classifier
     
     def fit(self, nmin: int, nmax: int,log=False):
         self.faceEigenClassifier.fit(nmin, nmax, log)
             
     def test(self, test_image, target_dim=(100,100), double=False, gray=True,log=False,already_processed=False):
-        from .ImageUtils import lbpPreProcess
+        from .ImageUtils import lbpPreProcess, im2double
         if self.strategy == 'lbp' and not already_processed:
-            test_image = lbpPreProcess(cv2.cvtColor(test_image,cv2.COLOR_BGR2GRAY))
+            test_image = im2double(lbpPreProcess(cv2.cvtColor(test_image,cv2.COLOR_BGR2GRAY)))
         
         v, mins = self.faceEigenClassifier._test(test_image,target_dim, double, gray, log)
         
@@ -55,6 +55,7 @@ class KnownFaceClassifier(object):
         return len(unique_mins) <= self.notConvergenceTol
         #return v
 
+"""
 if __name__ == "__main__":
     from cv2 import imread
     from FaceRecognition import readFilesRecursively
@@ -88,7 +89,7 @@ if __name__ == "__main__":
     is_a_known_face = knownFaceClassifier.test(imread(TEST_IMAGE_PATH3), already_processed=True)
     print("is test a known face:", is_a_known_face)
     
-
+"""
 
 
 

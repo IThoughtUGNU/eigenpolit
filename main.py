@@ -7,7 +7,9 @@ Created on Wed Sep  5 17:53:54 2019
 
 # ------------------ MODULES ----------------------------
 
-from FaceRecognition.FaceRecognition import readFilesRecursively, faceRecognition
+
+from FaceRecognition.DatasetModel import readFilesRecursively
+from FaceRecognition.FaceRecognition import faceRecognition
 from FaceRecognition.FaceRecognition import selectKComponents, weights
 from FaceRecognition.ImageUtils import readImageAsGray, flattenImage
 
@@ -31,6 +33,7 @@ TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100-test\_badde
 TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100lbp-test\salvini\salvini002.jpg'
 TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100lbp-test\io\rugg001.png'
 TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100lbp-test\salvini\salvini003.jpg'
+TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100lbp-test\renzi\renzi001.jpg'
 
 MAX_N_EIGENVECTORS = 55
 # ------------------ Actual code ------------------------

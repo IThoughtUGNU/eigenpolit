@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 if __name__ == "__main__":
-    from cv2 import imread
-    from FaceRecognition.FaceRecognition import readFilesRecursively, faceRecognition, weights
+    from cv2 import imread    
+    from FaceRecognition.DatasetModel import readFilesRecursively
+    from FaceRecognition.FaceRecognition import faceRecognition, weights
     from FaceRecognition import KnownFaceClassifier
     import os
     # ------------------ CONSTANTS --------------------------
@@ -22,16 +23,16 @@ if __name__ == "__main__":
     
     images = readFilesRecursively(input_path)
     knownFaceClassifier = KnownFaceClassifier.MakeFromLbpModel(images,threshold=25)
+    knownFaceClassifier.notConvergenceTol = 2
     
-    knownFaceClassifier.fit(3, 50, log=True)
+    knownFaceClassifier.fit(3, 40, log=True)
     print("FIT!")
-    is_a_known_face = knownFaceClassifier.test(imread(TEST_IMAGE_PATH), already_processed=True)
+    is_a_known_face = knownFaceClassifier.test(imread(TEST_IMAGE_PATH2), already_processed=False,log=True)
     print("is test a known face:", is_a_known_face)
-    is_a_known_face = knownFaceClassifier.test(imread(TEST_IMAGE_PATH0), already_processed=True)
+    is_a_known_face = knownFaceClassifier.test(imread(TEST_IMAGE_PATH), already_processed=True,log=True)
     print("is test a known face:", is_a_known_face)
     
-
-    is_a_known_face = knownFaceClassifier.test(imread(TEST_IMAGE_PATH2), already_processed=False)
+    is_a_known_face = knownFaceClassifier.test(imread(TEST_IMAGE_PATH0), already_processed=True)
     print("is test a known face:", is_a_known_face)
     is_a_known_face = knownFaceClassifier.test(imread(TEST_IMAGE_PATH3), already_processed=True)
     print("is test a known face:", is_a_known_face)

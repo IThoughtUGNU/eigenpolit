@@ -22,34 +22,6 @@ def c(arr): # given a list or an array, return it as column vector (NumPy)
 def no_preprocess_f(image):
     return image
 
-def readFilesRecursively(folderpath,preprocessFunction=no_preprocess_f):
-    from cv2 import cvtColor, imread
-    from numpy import reshape, array    
-    from .ImageUtils import im2double
-    #try:
-    #    from ImageUtils import im2double
-    #except ModuleNotFoundError:
-    #    from .ImageUtils import im2double
-    
-    files_list = []
-    for root, subdirs, files in os.walk(folderpath):
-        for file in files:
-            ext = os.path.splitext(file)[1]
-            if ext in supported_exts:
-                files_list.append(os.path.join(root, file))
-    
-    n_images = len(files_list)
-    images = []
-    for i in range(n_images):
-        filename = files_list[i]
-        
-        #print(filename)
-        image = im2double(preprocessFunction(cvtColor(imread(filename), cv2.COLOR_BGR2GRAY)))
-        #print(image.size)
-        [m,n] = image.shape
-        images.append(reshape(image, m*n))
-    
-    return array(images)
 
 def readFiles(folderpath):
     from cv2 import cvtColor, imread
