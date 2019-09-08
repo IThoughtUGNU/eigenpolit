@@ -55,7 +55,7 @@ if __name__ == "__main__":
     from FaceRecognition.DatasetModel import DatasetModel
     from FaceRecognition.FaceEigenClassifier import FaceEigenClassifier
     from FaceRecognition.KnownFaceClassifier import KnownFaceClassifier
-    from numpy import zeros, ones
+    from numpy import zeros, ones, array
     
     # Goal
     # - Test the performance of FaceEigenClassifier (test if each test image is a face or not)
@@ -167,7 +167,8 @@ if __name__ == "__main__":
         #X_test  = X_test[y_test < output100_all_classes.index('io')]
         #y_test  = y_test[y_test < output100_all_classes.index('io')]
         
-        eigenfaceModel = EigenfaceModel(X_train, y_train,nmax=25)
+        eigenfaceModel = EigenfaceModel(X_train, y_train,nmin=1,nmax=150)
+        
         
         y_predict = zeros(len(y_test))
         for i, X_i in enumerate(X_test):
@@ -180,10 +181,24 @@ if __name__ == "__main__":
 
         plotConfusionMatrix(y_test, y_predict, labels = output100strict_classes)
         
-        """       
-        # #############################################################################
-        # Train a SVM classification model
+# #############################################################################
         
+        X_train_pca = eigenfaceModel.exportTrainPca()
+        
+        X_test_pca = []
+        
+        for X_i in X_test:
+            X_test_pca.append(eigenfaceModel.projectOntoEigenspace(X_i))
+        
+        X_test_pca = array(X_test_pca)
+        
+# #############################################################################
+        # Train a SVM classification model
+        from time import time
+        from sklearn.model_selection import GridSearchCV
+        from sklearn.svm import SVC
+        
+        print("----------------------- SVM TRAINING -------------------------")
         print("Fitting the classifier to the training set")
         t0 = time()
         param_grid = {'C': [1e3, 5e3, 1e4, 5e4, 1e5],
@@ -194,9 +209,22 @@ if __name__ == "__main__":
         print("done in %0.3fs" % (time() - t0))
         print("Best estimator found by grid search:")
         print(clf.best_estimator_)
-        """    
-            
-            
+        
+        
+        
+        # #############################################################################
+        # Quantitative evaluation of the model quality on the test set
+        print("----------------------- SVM TESTING -------------------------")
+        print("Predicting people's names on the test set")
+        t0 = time()
+        y_pred = clf.predict(X_test_pca)
+        print("done in %0.3fs" % (time() - t0))
+        
+        print(classification_report(y_test, y_pred, target_names=output100strict_classes))
+        plotConfusionMatrix(y_test, y_pred, output100strict_classes)
+        #print(confusion_matrix(y_test, y_pred, labels=range(n_classes)))
+    
+                    
             
     
     

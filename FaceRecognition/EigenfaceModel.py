@@ -25,7 +25,8 @@ class EigenfaceModel(object):
         weights_test_image = weights(test_minus_mean, u, train=False)
         return weights_test_image
         
-        
+    def exportTrainPca(self):
+        return self.weights_images.T
 
     def noFitTest(self, test_image):
         from .ImageUtils import flattenImage
