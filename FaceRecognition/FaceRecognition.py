@@ -45,7 +45,7 @@ def readFiles(folderpath):
     
     return array(images)
 
-def faceRecognition(images, nc):
+def faceRecognition(images, nc,m=None,n=None):
     """
     Function faceRecognition
     
@@ -73,7 +73,8 @@ def faceRecognition(images, nc):
     
     n_images, mn = images.shape
     
-    m = n = int(sqrt(mn)) # assumo immagini quadrate
+    if m == None:
+        m = n = int(sqrt(mn)) # assumo immagini quadrate
     
     sum_images = zeros((m * n), dtype=np.float32)
     

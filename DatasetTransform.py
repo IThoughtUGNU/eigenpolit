@@ -62,27 +62,34 @@ def Apply(input_path, output_path, image_transform_function, allowOverwrite=Fals
         
         imwrite((output_path / relative_filepaths[i]).__str__(), output_image)
         
+def lbp_transform(image_gray):
+    import cv2
+    import numpy as np
+    from ImageProcessing.lbp import lbp_calculated_pixel
+    
+    image_gray = cv2.cvtColor(image_gray, cv2.COLOR_BGR2GRAY)
+    [height, width] = image_gray.shape[0:2]
+    img_lbp = np.zeros((height, width,3), np.uint8)
+    for i in range(0, height):
+        for j in range(0, width):
+             img_lbp[i, j] = lbp_calculated_pixel(image_gray, i, j)
+        
+    return cv2.cvtColor(img_lbp, cv2.COLOR_BGR2GRAY)
+    
+def resize100_transform(image):
+    import cv2
+     
+    # resize image
+    return cv2.resize(image, (100,100), interpolation = cv2.INTER_AREA)
+
+def resize200_transform(image):
+    import cv2
+     
+    # resize image
+    return cv2.resize(image, (200,200), interpolation = cv2.INTER_AREA)
 
 if __name__ == "__main__":
-    def lbp_transform(image_gray):
-        import cv2
-        import numpy as np
-        from ImageProcessing.lbp import lbp_calculated_pixel
-        
-        image_gray = cv2.cvtColor(image_gray, cv2.COLOR_BGR2GRAY)
-        [height, width] = image_gray.shape[0:2]
-        img_lbp = np.zeros((height, width,3), np.uint8)
-        for i in range(0, height):
-            for j in range(0, width):
-                 img_lbp[i, j] = lbp_calculated_pixel(image_gray, i, j)
-            
-        return cv2.cvtColor(img_lbp, cv2.COLOR_BGR2GRAY)
-        
-    def resize100_transform(image):
-        import cv2
-         
-        # resize image
-        return cv2.resize(image, (100,100), interpolation = cv2.INTER_AREA)
+
 
     import argparse
     parser = argparse.ArgumentParser(description="Face extractor from images")

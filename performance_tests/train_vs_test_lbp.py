@@ -2,12 +2,13 @@
 
 import os
 import sys
+from plotting import plotConfusionMatrix
 
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
-
+"""
 def plotConfusionMatrix(y_test,y_predict, labels):
     from sklearn.metrics import confusion_matrix
     conf_mat = confusion_matrix(y_predict, y_test)
@@ -28,7 +29,7 @@ def plotConfusionMatrix(y_test,y_predict, labels):
     _ = plt.xticks(range(len(labels)), labels, rotation=90)
     _ = plt.yticks(range(len(labels)), labels)
     plt.show()
-            
+"""     
 if __name__ == "__main__":
     from pathlib import Path
     
@@ -37,13 +38,22 @@ if __name__ == "__main__":
     output100lbp      = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100lbp'
     output100lbp_test = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100lbp-test'
     
+    output100_test_strict = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100-test-strict'
     output100lbp_test_strict = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100lbp-test-strict'
     
-    output100strict_classes = ['berlusconi', 'bonino', 'calenda', 'conte', 'dimaio',
+    output200         = r'C:\dev\python\nm4cs\eigenfaces\dataset\output200'
+    output200_test    = r'C:\dev\python\nm4cs\eigenfaces\dataset\output200-test'
+    output200lbp      = r'C:\dev\python\nm4cs\eigenfaces\dataset\output200lbp'
+    output200lbp_test = r'C:\dev\python\nm4cs\eigenfaces\dataset\output200lbp-test'
+    
+    output200_test_strict = r'C:\dev\python\nm4cs\eigenfaces\dataset\output200-test-strict'
+    output200lbp_test_strict = r'C:\dev\python\nm4cs\eigenfaces\dataset\output200lbp-test-strict'
+    
+    output100strict_classes = ['berlusconi', 'calenda', 'conte', 'dimaio',
                          'gentiloni', 'mattarella', 'meloni', 'renzi', 'salvini',
                          'zingaretti']
     
-    output100_classes = ['berlusconi', 'bonino', 'calenda', 'conte', 'dimaio',
+    output100_classes = ['berlusconi', 'calenda', 'conte', 'dimaio',
                          'gentiloni', 'mattarella', 'meloni', 'renzi', 'salvini',
                          'zingaretti','io','_baddetections']
     
@@ -81,7 +91,7 @@ if __name__ == "__main__":
     
     if 0:
         model = DatasetModel([output100, output100_test])
-        model = model.labeledByFolderOfFiles(output100_classes)
+        model = model.labeledByFolderOfFiles(output100_all_classes)
         
         X, y = model.exportedAsClassicDataset()
         
@@ -132,9 +142,9 @@ if __name__ == "__main__":
         
         w_predict = zeros(len(y_test))
         
-        knownFaceClassifier = KnownFaceClassifier.MakeFromLbpModel(X_train,threshold=25)
-        knownFaceClassifier.notConvergenceTol = 1
-        knownFaceClassifier.fit(3, 45,log=True) # nmax 35 to best unknowns; nmax 45 to best knowns
+        knownFaceClassifier = KnownFaceClassifier.MakeFromLbpModel(X_train,threshold=20)
+        knownFaceClassifier.notConvergenceTol = 6
+        knownFaceClassifier.fit(2, 40,log=True) # nmax 35 to best unknowns; nmax 45 to best knowns
         
         for i, X_i in enumerate(X_test):
             w_predict[i] = int(knownFaceClassifier.test(X_i,already_processed=True))
@@ -142,7 +152,9 @@ if __name__ == "__main__":
         
         from sklearn.metrics import classification_report
         print(classification_report(w_true, w_predict, target_names=['Unknown', 'Known']))
-        
+    
+    configs = { 0: [output100lbp, output100lbp_test_strict, output100strict_classes], 
+                1: 0 }    
     if 1:
 #   IMPLEMENTATION
 # - Test the performance, given a pass of KnownFaceClassifier before,
@@ -167,12 +179,12 @@ if __name__ == "__main__":
         #X_test  = X_test[y_test < output100_all_classes.index('io')]
         #y_test  = y_test[y_test < output100_all_classes.index('io')]
         
-        eigenfaceModel = EigenfaceModel(X_train, y_train,nmin=1,nmax=150)
-        
+        eigenfaceModel = EigenfaceModel(X_train, y_train,nmin=2,nmax=150)
+        print(eigenfaceModel)
         
         y_predict = zeros(len(y_test))
         for i, X_i in enumerate(X_test):
-            y_predict[i] = eigenfaceModel.noFitTest(X_i)
+            y_predict[i] = eigenfaceModel.noFitTest(X_i,1)
     
         from sklearn.metrics import classification_report
         import matplotlib.pyplot as plt
@@ -181,8 +193,8 @@ if __name__ == "__main__":
 
         plotConfusionMatrix(y_test, y_predict, labels = output100strict_classes)
         
-# #############################################################################
-        
+        # ---------------------- OTHER ALGORITHMS -----------------------------
+        from sklearn.neural_network import MLPClassifier         
         X_train_pca = eigenfaceModel.exportTrainPca()
         
         X_test_pca = []
@@ -191,39 +203,57 @@ if __name__ == "__main__":
             X_test_pca.append(eigenfaceModel.projectOntoEigenspace(X_i))
         
         X_test_pca = array(X_test_pca)
-        
-# #############################################################################
-        # Train a SVM classification model
-        from time import time
-        from sklearn.model_selection import GridSearchCV
-        from sklearn.svm import SVC
-        
-        print("----------------------- SVM TRAINING -------------------------")
+        # train a neural network
         print("Fitting the classifier to the training set")
-        t0 = time()
-        param_grid = {'C': [1e3, 5e3, 1e4, 5e4, 1e5],
-                      'gamma': [0.0001, 0.0005, 0.001, 0.005, 0.01, 0.1], }
-        clf = GridSearchCV(SVC(kernel='rbf', class_weight='balanced'),
-                           param_grid, cv=5, iid=False)
-        clf = clf.fit(X_train_pca, y_train)
-        print("done in %0.3fs" % (time() - t0))
-        print("Best estimator found by grid search:")
-        print(clf.best_estimator_)
-        
-        
-        
-        # #############################################################################
-        # Quantitative evaluation of the model quality on the test set
-        print("----------------------- SVM TESTING -------------------------")
-        print("Predicting people's names on the test set")
-        t0 = time()
+        clf = MLPClassifier(hidden_layer_sizes=(1024,1024,), batch_size='auto', verbose=True, early_stopping=True).fit(X_train_pca, y_train)
+        print(clf)
         y_pred = clf.predict(X_test_pca)
-        print("done in %0.3fs" % (time() - t0))
-        
+        print("#--------------------------------------------------------------")
+        print("#-                      NEURAL NETWORKS                       -")
+        print("#--------------------------------------------------------------")
         print(classification_report(y_test, y_pred, target_names=output100strict_classes))
-        plotConfusionMatrix(y_test, y_pred, output100strict_classes)
-        #print(confusion_matrix(y_test, y_pred, labels=range(n_classes)))
-    
+        plotConfusionMatrix(y_test, y_pred, labels = output100strict_classes)
+        
+        if 1:
+    # #############################################################################
+
+            
+    # #############################################################################
+            # Train a SVM classification model
+            from time import time
+            from sklearn.model_selection import GridSearchCV
+            from sklearn.svm import SVC, LinearSVC, NuSVC
+            
+            print("#--------------------------------------------------------------")
+            print("#-               SUPPORT VECTOR MACHINES                      -")
+            print("#--------------------------------------------------------------")
+            print("Fitting the classifier to the training set")
+            t0 = time()
+            #param_grid = {'C': [1e3, 5e3, 1e4, 5e4, 1e5],
+            #              'gamma': [0.0001, 0.0005, 0.001, 0.005, 0.01, 0.1], }
+            #clf = GridSearchCV(SVC(kernel='rbf', class_weight='balanced'),
+            #                   param_grid, cv=5, iid=False)
+            #clf = clf.fit(X_train_pca, y_train)
+            #print("done in %0.3fs" % (time() - t0))
+            #print("Best estimator found by grid search:")
+            #print(clf.best_estimator_)
+            
+            # decent
+            clf = LinearSVC(max_iter=20000)
+            clf = clf.fit(X_train_pca, y_train)
+            
+            # #############################################################################
+            # Quantitative evaluation of the model quality on the test set
+            print("----------------------- SVM TESTING -------------------------")
+            print("Predicting people's names on the test set")
+            t0 = time()
+            y_pred = clf.predict(X_test_pca)
+            print("done in %0.3fs" % (time() - t0))
+            
+            print(classification_report(y_test, y_pred, target_names=output100strict_classes))
+            plotConfusionMatrix(y_test, y_pred, output100strict_classes)
+            #print(confusion_matrix(y_test, y_pred, labels=range(n_classes)))
+        
                     
             
     

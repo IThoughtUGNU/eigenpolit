@@ -33,9 +33,9 @@ TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100-test\_badde
 TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100lbp-test\salvini\salvini002.jpg'
 TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100lbp-test\io\rugg001.png'
 TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100lbp-test\salvini\salvini003.jpg'
-TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100lbp-test\renzi\renzi001.jpg'
+TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100lbp-test\renzi\renzi002.jpg'
 
-MAX_N_EIGENVECTORS = 55
+MAX_N_EIGENVECTORS = 40 #55
 # ------------------ Actual code ------------------------
 input_path = INPUT_PATH
 
@@ -65,7 +65,11 @@ eigenvals = np.sort(eigenvals)[::-1] # Ordina gli autovalori in modo discendente
 
 error_plot = zeros(MAX_N_EIGENVECTORS)
 
-for n in range(4,MAX_N_EIGENVECTORS):
+
+mins = zeros(MAX_N_EIGENVECTORS-3)
+mins_differences = zeros(MAX_N_EIGENVECTORS-3)
+
+for n in range(3,MAX_N_EIGENVECTORS):
     u, A, mean_face = faceRecognition(images, n)
     u = u[:,3:]
     
@@ -93,10 +97,20 @@ for n in range(4,MAX_N_EIGENVECTORS):
 
     min_pos = err.argmin()
     min_error = err[min_pos]
+    mins[n-3] = min_pos
     
     print("Number of eigen components: %d --> Error %d --> Image # %d.\n" % (n,min_error,min_pos))
     error_plot[n] = min_error
+
+threshold = 15    
+for i in range(threshold-3, MAX_N_EIGENVECTORS-3):
+    j = i #- 3
+    mins_differences[j] = mins[j] - mins[j-1]
     
+changeCount = 0
+for i in range(threshold-3,len(mins_differences)):
+    if mins_differences[i] != 0:
+        changeCount += 1
 #cv2.destroyAllWindows() 
 
 x = np.arange(0,MAX_N_EIGENVECTORS,1)

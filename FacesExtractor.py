@@ -103,6 +103,8 @@ if __name__ == "__main__":
             
             # Read the image
             image = cv2.imread(imagePath)
+            if image is None:
+                continue
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             
             # Detect faces in the image

@@ -110,16 +110,18 @@ class FaceEigenClassifier(object):
 
         threshold = self.threshold
         assert(self.nmax > threshold) # "Can't make a prediction; insufficient # of eigenfaces"
-        for i in range(self.nmin, self.nmax):
-            j = i - self.nmin
-            if j < threshold:
-                continue
+        for j in range(threshold-self.nmin, self.nmax-self.nmin):
             mins_differences[j] = mins[j] - mins[j-1]
             
+        changeCount = 0
+        for i in range(threshold-self.nmin, self.nmax-self.nmin):
+            if mins_differences[i] != 0:
+                changeCount += 1
+            
         if (mins_differences[threshold-self.nmin:] == 0).all():
-            return True, mins
+            return True, mins, changeCount
         else:
-            return False, mins
+            return False, mins, changeCount
 
     def test(self, test_image, target_dim=(100,100), double=False, gray=True,log=False):
         return self._test(test_image, target_dim, double, gray,log)[0]

@@ -43,16 +43,19 @@ class KnownFaceClassifier(object):
     def fit(self, nmin: int, nmax: int,log=False):
         self.faceEigenClassifier.fit(nmin, nmax, log)
             
-    def test(self, test_image, target_dim=(100,100), double=False, gray=True,log=False,already_processed=False):
+    def test(self, test_image, target_dim=(100,100), double=False, gray=True,log=False,already_processed=False,goByCount=True):
         from .ImageUtils import lbpPreProcess, im2double
         if self.strategy == 'lbp' and not already_processed:
             test_image = im2double(lbpPreProcess(cv2.cvtColor(test_image,cv2.COLOR_BGR2GRAY)))
         
-        v, mins = self.faceEigenClassifier._test(test_image,target_dim, double, gray, log)
+        v, mins, changesCount = self.faceEigenClassifier._test(test_image,target_dim, double, gray, log)
         
         #   #for i in range(threshold,self.nmax-self.nmin):
-        unique_mins = set(mins[self.threshold:])   
-        return len(unique_mins) <= self.notConvergenceTol
+        if not goByCount:
+            unique_mins = set(mins[self.threshold:])   
+            return len(unique_mins) <= self.notConvergenceTol
+        else:
+            return changesCount < self.notConvergenceTol
         #return v
 
 """
