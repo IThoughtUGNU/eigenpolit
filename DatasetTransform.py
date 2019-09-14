@@ -75,7 +75,30 @@ def lbp_transform(image_gray):
              img_lbp[i, j] = lbp_calculated_pixel(image_gray, i, j)
         
     return cv2.cvtColor(img_lbp, cv2.COLOR_BGR2GRAY)
+
+from ImageProcessing.LocalBinaryPatterns import LocalBinaryPatterns
+desc = LocalBinaryPatterns(16, 2)    
+def lbp_transform2(image_gray):
+    import cv2
+    #print("a",end="")
+    image_gray = cv2.cvtColor(image_gray, cv2.COLOR_BGR2GRAY)
+    lbp, hist = desc.describe(image_gray)
+    return lbp
     
+def two_bin(image_gray):
+    import cv2
+    import numpy as np
+    from ImageProcessing import two_bin
+    image_gray = cv2.cvtColor(image_gray, cv2.COLOR_BGR2GRAY)
+    
+    [height, width] = image_gray.shape[0:2]
+    img_two_bin = np.zeros((height, width,3), np.uint8)
+    for i in range(0, height):
+        for j in range(0, width):
+             img_two_bin[i, j] = two_bin.calculated_pixel(image_gray, i, j)
+            
+    return img_two_bin
+             
 def resize100_transform(image):
     import cv2
      
@@ -90,7 +113,7 @@ def resize200_transform(image):
 
 if __name__ == "__main__":
 
-
+    import cv2
     import argparse
     parser = argparse.ArgumentParser(description="Face extractor from images")
     
@@ -105,26 +128,48 @@ if __name__ == "__main__":
                 default=False,
                 dest='lbp',
                 help='Apply Local Binary Pattern function')
+    parser.add_argument('--lbp2', action='store_true',
+                default=False,
+                dest='lbp2',
+                help='Apply Local Binary Pattern function')
+    parser.add_argument('--twobin', action='store_true',
+                default=False,
+                dest='twobin',
+                help='Apply Two Bin function')
     
     parser.add_argument('--resize100', action='store_true',
                 default=False,
                 dest='resize100',
                 help='Apply Local Binary Pattern function')
+    
+    parser.add_argument('--resizesq', type=int, 
+                        help='Resize image to n x n (specify integer n)')
+    
+    
     args = parser.parse_args()
 
     input_path  = args.inputpath
     output_path = args.outputpath
     lbp = args.lbp
+    lbp2 = args.lbp2
     resize100 = args.resize100
+    resizesq = args.resizesq
     
     if input_path is None or output_path is None:
         raise SystemExit
     
     if resize100:
         Apply(input_path, output_path, image_transform_function=resize100_transform)
+    if resizesq is not None:
+        Apply(input_path, output_path, image_transform_function=lambda img : \
+              cv2.resize(img, (resizesq,resizesq), interpolation = cv2.INTER_AREA))
     if lbp:
         Apply(input_path, output_path, image_transform_function=lbp_transform)
-    
+    if lbp2:
+        Apply(input_path, output_path, image_transform_function=lbp_transform2)
+    if args.twobin:
+        Apply(input_path, output_path, image_transform_function=two_bin)
+        
     
 
 

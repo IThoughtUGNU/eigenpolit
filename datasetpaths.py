@@ -25,12 +25,44 @@ import os
 from pathlib import Path
 
 dataset_mainfolder = r'C:\dev\python\nm4cs\eigenfaces\dataset'
+
+# FACES94 
+
 faces94 = os.path.join(dataset_mainfolder, 'faces94_mixed')
 faces94_complement = os.path.join(dataset_mainfolder, 'faces94_complement')
 
 faces94_own_classes = [Path(f.path).stem for f in os.scandir(faces94) if f.is_dir() ]
 faces94_compl_classes = [Path(f.path).stem for f in os.scandir(faces94_complement) if f.is_dir() ]
 faces94_ALL_classes = faces94_own_classes + faces94_compl_classes
+
+# FACES95
+
+faces95 = os.path.join(dataset_mainfolder, 'faces95')
+faces95_complement = os.path.join(dataset_mainfolder, 'faces95_complement')
+
+faces95_fe97 = os.path.join(dataset_mainfolder, 'faces95-fe97')
+faces95_complement_fe97 = os.path.join(dataset_mainfolder, 'faces95_complement-fe97')
+
+faces95_own_classes = [Path(f.path).stem for f in os.scandir(faces95) if f.is_dir() ]
+faces95_complement_classes = [Path(f.path).stem for f in os.scandir(faces95_complement) if f.is_dir() ]
+faces95_all_classes = faces95_own_classes + faces95_complement_classes
+
+# FACES96
+faces96 = os.path.join(dataset_mainfolder, 'faces96')
+faces96_complement = os.path.join(dataset_mainfolder, 'faces96_complement')
+
+faces96_own_classes = [Path(f.path).stem for f in os.scandir(faces96) if f.is_dir() ]
+faces96_complement_classes =  [Path(f.path).stem for f in os.scandir(faces96_complement) if f.is_dir() ]
+faces96_all_classes = faces96_own_classes + faces96_complement_classes
+
+faces96_fe75  = os.path.join(dataset_mainfolder, 'faces96-fe75')
+faces96_complement_fe75  = os.path.join(dataset_mainfolder, 'faces96_complement-fe75')
+
+faces96_fe100  = os.path.join(dataset_mainfolder, 'faces96-fe100')
+faces96_complement_fe100  = os.path.join(dataset_mainfolder, 'faces96_complement-fe100')
+
+faces96_fe100lbp  = os.path.join(dataset_mainfolder, 'faces96-fe100lbp')
+faces96_complement_fe100lbp  = os.path.join(dataset_mainfolder, 'faces96_complement-fe100lbp')
 
 
 dirs_at_dir = [Path(f.path).stem for f in os.scandir(output100lbp_test) if f.is_dir() ]

@@ -9,7 +9,7 @@ PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
-from datasetpaths import faces94, faces94_own_classes
+from datasetpaths import faces96, faces96_own_classes
 
 from plotting import plotConfusionMatrix
 from FaceRecognition.DatasetModel import DatasetModel
@@ -19,8 +19,8 @@ from sklearn.model_selection import train_test_split
 doPlot = False # Warning, confusion matrices very big!
 
 if __name__ == "__main__":
-    model = DatasetModel(faces94)
-    model = model.labeledByFolderOfFiles(faces94_own_classes)
+    model = DatasetModel(faces96)
+    model = model.labeledByFolderOfFiles(faces96_own_classes)
     m,n = model.getDim()
     X, y = model.exportedAsClassicDataset()
     
@@ -42,9 +42,9 @@ if __name__ == "__main__":
     
     from sklearn.metrics import classification_report
     
-    print(classification_report(y_test, y_predict, target_names=faces94_own_classes))
+    print(classification_report(y_test, y_predict, target_names=faces96_own_classes))
     if doPlot:
-        plotConfusionMatrix(y_test, y_predict, labels = faces94_own_classes)
+        plotConfusionMatrix(y_test, y_predict, labels = faces96_own_classes)
     
     # ---------------------- OTHER ALGORITHMS -----------------------------
     from sklearn.neural_network import MLPClassifier         
@@ -64,6 +64,6 @@ if __name__ == "__main__":
     print("#--------------------------------------------------------------")
     print("#-                      NEURAL NETWORKS                       -")
     print("#--------------------------------------------------------------")
-    print(classification_report(y_test, y_pred, target_names=faces94_own_classes))
+    print(classification_report(y_test, y_pred, target_names=faces96_own_classes))
     if doPlot:
-        plotConfusionMatrix(y_test, y_pred, labels = faces94_own_classes)
+        plotConfusionMatrix(y_test, y_pred, labels = faces96_own_classes)

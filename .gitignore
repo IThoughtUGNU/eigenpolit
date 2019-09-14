@@ -1,2 +1,11 @@
 *.pyc
-
+_experimental/
+build/
+setup.py
+performance_tests/cy_test.py
+performance_tests/cy_time_vs_py.py
+*.svg
+*.c
+*.pyx
+ImageProcessing/LocalBinaryPatterns.py
+ImageProcessing/two_bin.py
