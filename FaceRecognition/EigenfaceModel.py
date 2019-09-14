@@ -23,9 +23,9 @@ def most_common(L):
 
 class EigenfaceModel(object):
     def __init__(self,images,labels, nmin:int = 3, nmax:int=20,m=None,n=None):
-        from .FaceRecognition import faceRecognition, weights
+        from .FaceRecognition import buildFacespace, weights
         
-        u, A, mean_face = faceRecognition(images, nmax,m,n)
+        u, A, mean_face = buildFacespace(images, nmax, m, n)
         u = u[:,nmin:]
         self.u = u
         self.A = A

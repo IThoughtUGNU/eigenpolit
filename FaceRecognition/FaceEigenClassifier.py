@@ -34,13 +34,13 @@ class FaceEigenClassifier(object):
         
     def fit(self, nmin: int, nmax: int,log=False):
         assert (nmax > nmin)
-        from .FaceRecognition import faceRecognition, weights
+        from .FaceRecognition import buildFacespace, weights
         
         self.nmin = nmin
         self.nmax = nmax
         
         for n in range(nmin, nmax):
-            u, A, mean_face = faceRecognition(self.images, n)
+            u, A, mean_face = buildFacespace(self.images, n)
             u = u[:,nmin:]
             
             self.u_list.append(u)

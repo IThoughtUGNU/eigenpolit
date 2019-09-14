@@ -9,7 +9,7 @@ Created on Fri Sep  6 14:55:44 2019
 
 
 from FaceRecognition.DatasetModel import readFilesRecursively
-from FaceRecognition.FaceRecognition import faceRecognition
+from FaceRecognition.FaceRecognition import buildFacespace
 from FaceRecognition.FaceRecognition import selectKComponents, weights
 from FaceRecognition.ImageUtils import readImageAsGray, flattenImage, lbpPreProcess
 
@@ -34,7 +34,7 @@ input_path = INPUT_PATH
 
 images = readFilesRecursively(input_path)
 
-u, A, mean_face = faceRecognition(images, n_eigenvectors)
+u, A, mean_face = buildFacespace(images, n_eigenvectors)
 
 u = u[:,3:]
 

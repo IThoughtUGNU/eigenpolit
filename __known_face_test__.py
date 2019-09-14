@@ -3,7 +3,7 @@
 if __name__ == "__main__":
     from cv2 import imread    
     from FaceRecognition.DatasetModel import readFilesRecursively
-    from FaceRecognition.FaceRecognition import faceRecognition, weights
+    from FaceRecognition.FaceRecognition import buildFacespace, weights
     from FaceRecognition import KnownFaceClassifier
     import os
     # ------------------ CONSTANTS --------------------------

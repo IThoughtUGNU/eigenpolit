@@ -9,3 +9,4 @@ performance_tests/cy_time_vs_py.py
 *.pyx
 ImageProcessing/LocalBinaryPatterns.py
 ImageProcessing/two_bin.py
+.idea/

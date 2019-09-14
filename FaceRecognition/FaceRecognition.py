@@ -45,7 +45,7 @@ def readFiles(folderpath):
     
     return array(images)
 
-def faceRecognition(images, nc,m=None,n=None):
+def buildFacespace(images, nc, m=None, n=None):
     """
     Function faceRecognition
     

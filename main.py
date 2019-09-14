@@ -9,7 +9,7 @@ Created on Wed Sep  5 17:53:54 2019
 
 
 from FaceRecognition.DatasetModel import readFilesRecursively
-from FaceRecognition.FaceRecognition import faceRecognition
+from FaceRecognition.FaceRecognition import buildFacespace
 from FaceRecognition.FaceRecognition import selectKComponents, weights
 from FaceRecognition.ImageUtils import readImageAsGray, flattenImage
 
@@ -41,7 +41,7 @@ input_path = INPUT_PATH
 
 images = readFilesRecursively(input_path)
 
-u, A, mean_face = faceRecognition(images, MAX_N_EIGENVECTORS)
+u, A, mean_face = buildFacespace(images, MAX_N_EIGENVECTORS)
 
 
 eigenval,V = eig(A.T.dot(A))
@@ -70,7 +70,7 @@ mins = zeros(MAX_N_EIGENVECTORS-3)
 mins_differences = zeros(MAX_N_EIGENVECTORS-3)
 
 for n in range(3,MAX_N_EIGENVECTORS):
-    u, A, mean_face = faceRecognition(images, n)
+    u, A, mean_face = buildFacespace(images, n)
     u = u[:,3:]
     
     # Let's take a test image matrix
