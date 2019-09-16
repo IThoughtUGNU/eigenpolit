@@ -49,7 +49,7 @@ if __name__ == "__main__":
         #X_test  = X_test[y_test < output100_all_classes.index('io')]
         #y_test  = y_test[y_test < output100_all_classes.index('io')]
         
-        eigenfaceModel = EigenfaceModel(X_train, y_train,nmin=3,nmax=100) # old config 2 | 150 (documentation)
+        eigenfaceModel = EigenfaceModel(X_train, y_train,nmin=2,nmax=150) # old config 2 | 150 (documentation)
         print(eigenfaceModel)
         
         y_predict2 = zeros(len(y_test))
