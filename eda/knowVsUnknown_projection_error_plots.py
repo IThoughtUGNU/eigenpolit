@@ -26,7 +26,9 @@ configs = {
         #'faces96-fe': [faces96_fe, faces96_complement, faces96_all_classes],
         'faces96-fe75': [faces96_fe75, faces96_complement_fe75, faces96_all_classes],
         'faces96-fe100': [faces96_fe100, faces96_complement_fe100, faces96_all_classes],
-        'faces96-fe100lbp': [faces96_fe100lbp, faces96_complement_fe100lbp, faces96_all_classes]
+        'faces96-fe100lbp': [faces96_fe100lbp, faces96_complement_fe100lbp, faces96_all_classes],
+        'polit100': [polit100, polit100_complement, polit100_all_classes],
+        'polit100lbp' : [polit100lbp, polit100lbp_complement, polit100_all_classes]
         }
 
 blue_color = '#0504aa'
@@ -234,7 +236,7 @@ def showMinDistancesBetweenInVsOutTrainingDataset(config):
     print("mean:", mean," | sd:", sd, " |max:", max(epsilons2))
     print("suggested cut threshold (mean+2sd):", mean + 2*sd)
     
-    return model, eigenfaceModel, epsilons1, epsilons2
+    # return model, eigenfaceModel, epsilons1, epsilons2
     
 
 if __name__ == "__main__":

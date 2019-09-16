@@ -39,7 +39,33 @@ class EigenfaceModel(object):
         
     def __str__(self):
         return "EigenfaceModel(nmin: %d, nmax %d)" % (self.nmin, self.nmax)
+
+    def MakeWithAtomicClasses(images, labels, nmin: int = 3, nmax: int = 20, m = None, n = None):
+        import numpy as np
+        labels = np.array(labels)
+        unique_labels = np.unique(labels)
         
+        mean_images = []
+        #c = 0
+        #image_sum = np.zeros(images[0,:].shape)
+        #
+        #current_j = 0
+        #current_label = unique_labels[0]
+        #for i, image_i in enumerate(images):
+        #    if current_label == labels[i]:
+        #        image_sum +=
+        for ulabel in unique_labels:
+            class_images = images[labels == ulabel]
+            mean_images.append(sum(class_images) / len(class_images))
+            
+        mean_images = np.array(mean_images)
+        return EigenfaceModel(mean_images, unique_labels, nmin, nmax, m, n)
+        
+    
+    def makeAtomicClasses(self):
+        print("[WARNING] EigenfaceModel.makeAtomicClasses Not implemented yet.")
+        pass
+    
     def projectOntoEigenspace(self, test_image):
         from .FaceRecognition import weights
         u,mean_face = self.u, self.mean_face
@@ -55,6 +81,52 @@ class EigenfaceModel(object):
 
     def noFitTest(self,test_image,k=1):
         return self._noFitTest(test_image, k)[0]
+    
+    def angleTest(self, test_image, k = 1):
+        from .ImageUtils import flattenImage
+        from .FaceRecognition import weights
+        from numpy import zeros, argsort, arccos
+        from numpy.linalg import norm
+        
+        assert(k>=1)
+        
+        u,mean_face = self.u, self.mean_face
+        if len(test_image.shape) > 1:
+            # If the test image is not given already flatten, let's flatten it.
+            test_image = flattenImage(test_image)
+        
+        # Subtract average face from test image
+        test_minus_mean = test_image - mean_face
+        
+        
+        # Calculate weights of Test Images
+        weights_test_image = weights(test_minus_mean, u, train=False,height=self.m, width=self.n)
+        
+        # Find number of images in training dataset
+        n_images = self.weights_images.shape[1]
+        
+        err = zeros(n_images)
+        
+        for i in range(n_images):
+            #err[i] = norm(weights_test_image - self.weights_images[:,i])
+            err[i] = arccos(
+                    weights_test_image.dot(
+                            self.weights_images[:,i]) / (norm(weights_test_image) * norm(self.weights_images[:,i])))
+        
+        arg_sorted_err = argsort(err) 
+        #sorted_err = err[arg_sorted_err]
+        min_positions = arg_sorted_err[:k]
+        
+        #min_pos = err.argmin()
+        #min_error = err[min_pos]
+        
+        if k == 1:
+            match_class = self.labels[min_positions[0]]
+        elif k > 1:
+            matching_labels = self.labels[min_positions]
+            match_class = most_common(matching_labels)
+        
+        return match_class#, err[min_positions[0]]        
     
     def _noFitTest(self, test_image,k=1):
         from .ImageUtils import flattenImage

@@ -10,3 +10,5 @@ performance_tests/cy_time_vs_py.py
 ImageProcessing/LocalBinaryPatterns.py
 ImageProcessing/two_bin.py
 .idea/
+*.npy
+

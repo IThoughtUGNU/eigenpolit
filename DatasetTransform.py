@@ -146,6 +146,8 @@ if __name__ == "__main__":
                         help='Resize image to n x n (specify integer n)')
     
     
+    parser.add_argument('--blur', type=int, help='Apply blur of n x n window')
+    parser.add_argument('--median', type=int, help='Apply median of n x n window')
     args = parser.parse_args()
 
     input_path  = args.inputpath
@@ -169,8 +171,14 @@ if __name__ == "__main__":
         Apply(input_path, output_path, image_transform_function=lbp_transform2)
     if args.twobin:
         Apply(input_path, output_path, image_transform_function=two_bin)
+    if args.blur:
+        n = args.blur
+        Apply(input_path, output_path, image_transform_function=lambda img : cv2.blur(img,(n,n)))
         
-    
+    if args.median:
+        n = args.median
+        Apply(input_path, output_path, image_transform_function=lambda img : cv2.medianBlur(img,n))
+        
 
 
 

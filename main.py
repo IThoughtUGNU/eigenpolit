@@ -24,6 +24,8 @@ import numpy as np
 
 INPUT_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100'
 INPUT_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100lbp'
+INPUT_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100\dimaio'
+INPUT_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100'
 
 TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100-test\_baddetections\matt022-2.jpg'
 TEST_IMAGE_PATH = r'C:\dev\python\nm4cs\eigenfaces\dataset\output100-test\io\rugg001.png'
@@ -43,6 +45,12 @@ images = readFilesRecursively(input_path)
 
 u, A, mean_face = buildFacespace(images, MAX_N_EIGENVECTORS)
 
+imshow("Mean face", mean_face.reshape(100,100))
+
+cv2.waitKey(0)
+cv2.destroyAllWindows() 
+
+#raise RuntimeError
 
 eigenval,V = eig(A.T.dot(A))
 
@@ -139,8 +147,9 @@ plt.show()
 #plt.tight_layout()
 #plt.show()
 
-
-    
+n_eig = 10
+cv2.imshow("Eigenface %d" % n_eig, u[:,n_eig].reshape((100,100)))
+cv2.waitKey(0)
 
 #figure,subplot(4,4,1)
 #imagesc(reshape(mean_matrix, [h,w]))

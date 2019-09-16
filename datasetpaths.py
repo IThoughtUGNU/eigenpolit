@@ -70,3 +70,25 @@ output100_all_classes = output100_classes.copy()
 output100_all_classes.extend(dirs_at_dir)
 output100lbp_classes = list(set(output100_all_classes))
 
+# POLIT
+
+polit100 = os.path.join(dataset_mainfolder, 'polit100')
+polit100_complement = os.path.join(dataset_mainfolder, 'polit100_complement')
+
+polit100lbp = os.path.join(dataset_mainfolder, 'polit100lbp')
+polit100lbp_complement = os.path.join(dataset_mainfolder, 'polit100_complement-lbp')
+
+polit100blur_lbp = os.path.join(dataset_mainfolder, 'polit100blur_lbp')
+polit100blur_lbp_complement = os.path.join(dataset_mainfolder, 'polit100_complement-blur-lbp')
+
+polit100med_lbp = os.path.join(dataset_mainfolder, 'polit100med-lbp')
+polit100med_lbp_complement = os.path.join(dataset_mainfolder, 'polit100_complement-med-lbp')
+
+polit100_own_classes = [Path(f.path).stem for f in os.scandir(polit100) if f.is_dir() ]
+polit100_complement_classes = [Path(f.path).stem for f in os.scandir(polit100_complement) if f.is_dir() ]
+polit100_all_classes = polit100_own_classes + polit100_complement_classes
+
+
+
+
+

@@ -66,6 +66,7 @@ if __name__ == "__main__":
     from FaceRecognition.FaceEigenClassifier import FaceEigenClassifier
     from FaceRecognition.KnownFaceClassifier import KnownFaceClassifier
     from numpy import zeros, ones, array
+    import numpy as np
     
     # Goal
     # - Test the performance of FaceEigenClassifier (test if each test image is a face or not)
@@ -162,24 +163,41 @@ if __name__ == "__main__":
 #     but with images not already present in the training dataset.
 #       --> Mix all the KNOWN people from output100lbp and output100lbp-test (leave out foreigners)
 #           Select 80/20 or 90/10 randomly to build training set and test set.
-    
+        import cv2
         from FaceRecognition.EigenfaceModel import EigenfaceModel
         from sklearn.model_selection import train_test_split
 
         model = DatasetModel([output100lbp, output100lbp_test_strict])
         model = model.labeledByFolderOfFiles(output100strict_classes)
+        
         X, y = model.exportedAsClassicDataset()
-
-        X_train, X_test, y_train, y_test = train_test_split(X, 
-                                                            y, 
-                                                            test_size=0.1,  # 0.2
-                                                            random_state=0,
-                                                            stratify=y) 
-
+        Xo = X.copy()
+        
+        np.random.shuffle(X.T)
+        indices = range(len(y))
+        X_train, X_test, y_train, y_test, i_train, i_test = train_test_split(X, 
+                                                                y, 
+                                                                indices,
+                                                                test_size=0.1,  # 0.2
+                                                                random_state=0,
+                                                                stratify=y) 
+        
+        X_test_o = Xo[i_test]
+        
+        cv2.imshow("Test image (original)",   cv2.resize(X_test_o[23].reshape(100, 100),(200,200)))
+        cv2.imshow("Test image (permutated)", cv2.resize(X_test[23].reshape(100, 100),(200,200)))
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+        #import cv2
+        #cv2.imshow("X_train", X_train[2,:].reshape((100,100)))
+        #cv2.waitKey(0)
+        #cv2.destroyAllWindows()
+        np.save("X.array", X)
+        np.save("y.array", y)
         #X_test  = X_test[y_test < output100_all_classes.index('io')]
         #y_test  = y_test[y_test < output100_all_classes.index('io')]
         
-        eigenfaceModel = EigenfaceModel(X_train, y_train,nmin=2,nmax=150)
+        eigenfaceModel = EigenfaceModel(X_train, y_train,nmin=2,nmax=150) # 2 / 150
         print(eigenfaceModel)
         
         y_predict = zeros(len(y_test))
@@ -193,28 +211,29 @@ if __name__ == "__main__":
 
         plotConfusionMatrix(y_test, y_predict, labels = output100strict_classes)
         
-        # ---------------------- OTHER ALGORITHMS -----------------------------
-        from sklearn.neural_network import MLPClassifier         
-        X_train_pca = eigenfaceModel.exportTrainPca()
+        if 0:
+            # ---------------------- OTHER ALGORITHMS -----------------------------
+            from sklearn.neural_network import MLPClassifier         
+            X_train_pca = eigenfaceModel.exportTrainPca()
+            
+            X_test_pca = []
+            
+            for X_i in X_test:
+                X_test_pca.append(eigenfaceModel.projectOntoEigenspace(X_i))
+            
+            X_test_pca = array(X_test_pca)
+            # train a neural network
+            print("Fitting the classifier to the training set")
+            clf = MLPClassifier(hidden_layer_sizes=(1024,1024,), batch_size='auto', verbose=True, early_stopping=True).fit(X_train_pca, y_train)
+            print(clf)
+            y_pred = clf.predict(X_test_pca)
+            print("#--------------------------------------------------------------")
+            print("#-                      NEURAL NETWORKS                       -")
+            print("#--------------------------------------------------------------")
+            print(classification_report(y_test, y_pred, target_names=output100strict_classes))
+            plotConfusionMatrix(y_test, y_pred, labels = output100strict_classes)
         
-        X_test_pca = []
-        
-        for X_i in X_test:
-            X_test_pca.append(eigenfaceModel.projectOntoEigenspace(X_i))
-        
-        X_test_pca = array(X_test_pca)
-        # train a neural network
-        print("Fitting the classifier to the training set")
-        clf = MLPClassifier(hidden_layer_sizes=(1024,1024,), batch_size='auto', verbose=True, early_stopping=True).fit(X_train_pca, y_train)
-        print(clf)
-        y_pred = clf.predict(X_test_pca)
-        print("#--------------------------------------------------------------")
-        print("#-                      NEURAL NETWORKS                       -")
-        print("#--------------------------------------------------------------")
-        print(classification_report(y_test, y_pred, target_names=output100strict_classes))
-        plotConfusionMatrix(y_test, y_pred, labels = output100strict_classes)
-        
-        if 1:
+        if 0:
     # #############################################################################
 
             

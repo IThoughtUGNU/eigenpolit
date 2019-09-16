@@ -3,7 +3,7 @@
 from numpy import zeros
 
 class DatasetModel(object):
-    def __init__(self, folderpath,shallowMirrorObject=None):
+    def __init__(self, folderpath,shallowMirrorObject=None, preprocess_func = lambda img : img):
         import numpy as np
         self.folderpath = folderpath
         
@@ -15,12 +15,12 @@ class DatasetModel(object):
                 self.partitionIndexes = [0]
                 for i, folder in enumerate(folderpath):
                     if i == 0:
-                        self.images, self.files, self.m, self.n = _readFilesRecursively(folder)
+                        self.images, self.files, self.m, self.n = _readFilesRecursively(folder, preprocessFunction=preprocess_func)
                             
                         self.partitionIndexes.append(len(self.images))
                         continue
                     
-                    images, files, self.m, self.n = _readFilesRecursively(folder)
+                    images, files, self.m, self.n = _readFilesRecursively(folder, preprocessFunction=preprocess_func)
                     self.partitionIndexes.append(len(images)+self.partitionIndexes[-1])
                     self.images = np.concatenate((self.images, images))
                     self.files.extend(files)
