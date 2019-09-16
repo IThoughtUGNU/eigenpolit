@@ -219,7 +219,7 @@ if __name__ == "__main__":
             X_test_pca = []
             
             for X_i in X_test:
-                X_test_pca.append(eigenfaceModel.projectOntoEigenspace(X_i))
+                X_test_pca.append(eigenfaceModel.projectOntoFacespace(X_i))
             
             X_test_pca = array(X_test_pca)
             # train a neural network

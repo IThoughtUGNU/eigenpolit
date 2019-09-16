@@ -66,7 +66,7 @@ class EigenfaceModel(object):
         print("[WARNING] EigenfaceModel.makeAtomicClasses Not implemented yet.")
         pass
     
-    def projectOntoEigenspace(self, test_image):
+    def projectOntoFacespace(self, test_image):
         from .FaceRecognition import weights
         u,mean_face = self.u, self.mean_face
         

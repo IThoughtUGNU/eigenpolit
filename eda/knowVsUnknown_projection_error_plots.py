@@ -77,7 +77,7 @@ def checkKnownPeople(config,color=blue_color):
     epsilons = zeros(len(y_test))
     for i, X_i in enumerate(X_test):
         Phi_i = X_i - eigenfaceModel.mean_face
-        Ω_i = eigenfaceModel.projectOntoEigenspace(X_i)
+        Ω_i = eigenfaceModel.projectOntoFacespace(X_i)
         #Phi_f = zeros(len(Phi_i))
         #Phi_f[:len(Ω_i)] = Ω_i
         #epsilons[i] = norm(Phi_i - Phi_f)
@@ -117,7 +117,7 @@ def checkUnknownPeople(config,color=pink_color):
     epsilons = zeros(len(y_test))
     for i, X_i in enumerate(X_test):
         Phi_i = X_i - eigenfaceModel.mean_face
-        Ω_i = eigenfaceModel.projectOntoEigenspace(X_i)
+        Ω_i = eigenfaceModel.projectOntoFacespace(X_i)
         
         #Phi_f = zeros(len(Phi_i))
         #Phi_f[:len(Ω_i)] = Ω_i
@@ -168,7 +168,7 @@ def checkAllPeople(config,color="#ab1749"):
     epsilons = zeros(len(y_test))
     for i, X_i in enumerate(X_test):
         Phi_i = X_i - eigenfaceModel.mean_face
-        Ω_i = eigenfaceModel.projectOntoEigenspace(X_i)
+        Ω_i = eigenfaceModel.projectOntoFacespace(X_i)
         epsilons[i] = sqrt(abs(Phi_i.T.dot(Phi_i) - Ω_i.T.dot(Ω_i))) #sqrt(norm(X_i - Ω_i))
     
     # 4 possibilities (from paper)
